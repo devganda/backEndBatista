@@ -1,8 +1,11 @@
 <?php 
 
 namespace App\Services;
+
+use App\DTO\ChurchDTO;
 use App\Http\Requests\ChurchRequest;
 use App\Models\Church;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class ChurchServices{
@@ -14,23 +17,29 @@ class ChurchServices{
         return ['success' => Church::all(), 'status' => 200];
     }
 
-    public function create(array $data):array
+    public function create(Request $request):array
     {
-        $validator = Validator::make($data,ChurchRequest::rules());
+        $validator = Validator::make( 
+            $request->all(),
+            ChurchRequest::rules()
+        );
 
         if($validator->fails())return ['error' => $validator->errors()->first(), 'status' => 422];
 
-        $church = new Church();
-        $church->name = $data['name'];
-        $church->email = $data['email'];
-        $church->address = $data['address'];
-        $church->cnpj = $data['cnpj'];
-        $church->date_inauguration = $data['date_inauguration'];
-        $church->UF = $data['UF'];
+        $dto = new ChurchDTO(
+            ...$request->only([
+                'name',
+                'email',
+                'address',
+                'cnpj',
+                'UF',
+                'date_inauguration'
+            ])
+        ); 
 
+        $church = new Church($dto->toArray());
         $church->save();
-        $id = $church->id;
-        $churchFirst = $church->find($id);
+        $churchFirst = $church->find($church->id);
         $this->result['message'] = "Instituição criada com sucesso!";
         $this->result['church'] = $churchFirst;
 
