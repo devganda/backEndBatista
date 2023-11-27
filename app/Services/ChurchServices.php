@@ -59,19 +59,30 @@ class ChurchServices{
         return ['success' => $this->result, 'status' => 200];
     }
 
-    public function update(array $data, string $ID):array
+    public function update(Request $request, string $ID):array
     {
-        $validator = Validator::make($data, ChurchRequest::rules());
+        $validator = Validator::make($request->all(), ChurchRequest::rules());
 
         if($validator->fails()) return ['error' => $validator->errors()->first(), 'status' => 422];
+
+        $dto = new ChurchDTO(
+            ...$request->only([
+                'name',
+                'email',
+                'address',
+                'cnpj',
+                'UF',
+                'date_inauguration'
+            ])
+        );
 
         $church = Church::find($ID);
 
         if(!$church) return['error' => 'Instituição não encontrada', 'status' => 404];
+    
+        $church->update($dto->toArray());
 
-        $church->update($data);
-
-        $churchFirst = Church::find($ID); 
+        $churchFirst = $church->find($ID); 
         
         $this->result['message'] = 'Instituição atualizada com sucesso!';
         $this->result['church'] = $churchFirst;
