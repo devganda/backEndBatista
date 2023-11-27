@@ -22,9 +22,9 @@ class ChurchController extends Controller
         return response()->json(['churches' => $result['success']], $result['status']);
     }
 
-    public function create(Request $request):object
+     public function create(Request $request):object
     {
-        $result = $this->churchServices->create($request->all());
+        $result = $this->churchServices->create($request);  
 
         if(isset($result['error'])) return response()->json(['error' =>$result['error']], $result['status']); 
 
