@@ -42,7 +42,7 @@ class ChurchController extends Controller
 
     public function update(Request $request, string $ID):object
     {   
-        $result = $this->churchServices->update($request->all(), $ID);
+        $result = $this->churchServices->update($request, $ID); 
 
         if(isset($result['error'])) return response()->json(['error' => $result['error']], $result['status']);
 
