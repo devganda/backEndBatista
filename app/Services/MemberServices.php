@@ -63,15 +63,27 @@ class MemberServices {
 
     public function update(Request $request, string $ID):array
     {
-        if(empty($ID)) return ['error'=> 'Id vazio!', 'status' => 404]; 
+        if(empty($ID)) return [
+            'error'=> 'Id vazio!', 
+            'status' => 404
+        ]; 
         
-        $validator = Validator::make($request->all(), MemberRequest::rules());
+        $validator = Validator::make(
+            $request->all(), 
+            MemberRequest::rules()
+        );
 
-        if($validator->fails()) return ['error' => $validator->errors()->first(), 'status' => 422];
+        if($validator->fails()) return [
+            'error' => $validator->errors()->first(), 
+            'status' => 422
+        ];
 
         $member = Member::find($ID);
 
-        if(!$member) return ['error' => 'Membro não encontrado!', 'status' => 404];
+        if(!$member) return [
+            'error' => 'Membro não encontrado!', 
+            'status' => 404
+        ];
 
         $dto = new MemberDTO(
             ...$request->only([
