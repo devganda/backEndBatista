@@ -7,13 +7,11 @@ use App\Services\MemberServices;
 class MemberController extends Controller
 {
     private $result = array();
-    private MemberServices $memberServices;
-    public function __construct(){
-
-        $this->memberServices = new MemberServices();
-    }
+    public function __construct(
+        private MemberServices $memberServices
+    ){}
     
-    public function index():object 
+    public function index() 
     {
         return response()->json(
             ['members' => $this->memberServices->all()], 
@@ -21,70 +19,83 @@ class MemberController extends Controller
         );
     }
 
-    public function edit(string $ID):object
-    {
-        $result = $this->memberServices->edit($ID);
+    public function edit(string $ID)
+    {      
 
-        if(isset($result['error'])) return response()->json(
-            array('error' => $result['error']), 
-            $result['status']
+        if(empty($ID)) {
+            $this->result['error'] = "id vazio";
+            return response()->json(
+                $this->result,
+                422
+            );
+        }
+
+        $this->result = $this->memberServices->edit($ID);
+
+        if(isset($this->result['errorFind'])) return response()->json(
+            $this->result, 
+            404
         );
 
-        return response()->json(
-            $result['success'], 
-            $result['status']
-        );
+        return response()->json($this->result);
     }
 
-    public function create(Request $request):object
+    public function create(Request $request)
     {
-        $result = $this->memberServices->create(
+        $this->result = $this->memberServices->create(
             $request
         );
 
-        if(isset($result['error'])) return response()->json(
-            ['error' => $result['error']], 
-            $result['status']
+        if(isset($this->result['errorValidator'])) return response()->json(
+            $this->result, 
+            422
         ); 
 
-        return response()->json(
-            $result['success'], 
-            $result['status']
-        );
+        return response()->json($this->result, 201);
     }
 
-    public function update(Request $request, string $ID):object
+    public function update(Request $request, string $ID)
     {   
-        $result = $this->memberServices->update(
+
+        if(empty($ID)) return response()->json(
+            ['error'=> 'Id vazio!'],
+            404
+        ); 
+
+        $this->result = $this->memberServices->update(
             $request, 
             $ID
         );
 
-        if(isset($result['error'])) return response()->json(
-            ['error' => $result['error']], 
-            $result['status']
+        if(isset($this->result['errorValidator'])) return response()->json(
+            $this->result, 
+            422
         );
 
-        return response()->json(
-            $result['success'], 
-            $result['status']
+        if(isset($this->result['errorFind'])) return response()->json(
+            $this->result, 
+            404
         );
+
+        return response()->json($this->result);
     }
 
-    public function delete(Request $request, string $ID):object
+    public function delete(Request $request, string $ID)
     {
-        $result = $this->memberServices->delete(
+        if(empty($ID)) return response()->json(
+            ['error'=> 'Id vazio!'],
+            404
+        ); 
+
+        $this->result = $this->memberServices->delete(
             $ID
         );
 
-        if(isset($result['error'])) return response()->json(
-            ['error' => $result['error']], 
-            $result['status']
-        ); 
+        if(isset($this->result['error'])) return response()->json(
+            $this->result, 
+            404
+        );
 
-        return response()->json(
-            [$result['success']], 
-            $result['status']
-        ); 
+        return response()->json($this->result); 
     }
 }

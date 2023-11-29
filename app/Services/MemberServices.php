@@ -19,24 +19,32 @@ class MemberServices {
 
     public function edit(string $ID):array
     {
-        if(empty($ID)) return ['error' => 'id vazio', 'status' => 422];
-
         $member = Member::find($ID);
 
-        if(!$member) return ['error' => 'Membro não econtrado!', 'status' => 404];
+        if(!$member){
+            $this->result['errorFind'] = "Membro não econtrado!"; 
+            return $this->result;
+        }
     
         $member->church;
 
         $this->result['member'] = $member;
 
-        return ['success' => $this->result, 'status' => 200];
+        return $this->result;
     }
 
     public function create(Request $request):array
     {   
-        $validator = Validator::make($request->all(), MemberRequest::rulesCreate());
+        $validator = Validator::make(
+            $request->all(), 
+            MemberRequest::rulesCreate()
+        );
 
-        if($validator->fails()) return['error' => $validator->errors()->first(), 'status' => 422];
+        if($validator->fails()) {
+
+            $this->result['errorValidator'] = $validator->errors()->first();
+            return $this->result;
+        }
 
         $dto = new MemberDTO(
             ...$request->only([
@@ -54,36 +62,33 @@ class MemberServices {
         $member = new Member($dto->toArray());
         $member->save();
 
-        $memberFirst = $member->find($member->id);
         $this->result['message'] = "Membros criados com sucesso!";
-        $this->result['member'] = $memberFirst;
+        $this->result['member'] = $member->find($member->id);
 
-        return ['success' => $this->result, 'status' => 201];
+        return $this->result;
     }
 
     public function update(Request $request, string $ID):array
     {
-        if(empty($ID)) return [
-            'error'=> 'Id vazio!', 
-            'status' => 404
-        ]; 
-        
         $validator = Validator::make(
             $request->all(), 
             MemberRequest::rules()
         );
 
-        if($validator->fails()) return [
-            'error' => $validator->errors()->first(), 
-            'status' => 422
-        ];
+        if($validator->fails()){
+
+            $this->result['errorValidator'] = $validator->errors()->first();
+
+            return $this->result;
+        } 
 
         $member = Member::find($ID);
 
-        if(!$member) return [
-            'error' => 'Membro não encontrado!', 
-            'status' => 404
-        ];
+        if(!$member){
+            $this->result['errorFind'] = "O Membro não foi encontrado!";
+
+            return $this->result;
+        } 
 
         $dto = new MemberDTO(
             ...$request->only([
@@ -100,25 +105,24 @@ class MemberServices {
 
         $member->update($dto->toArray());
 
-        $memberFirst = $member->find($ID);
         $this->result['message'] = "Dados alterados com sucesso!";
-        $this->result['member'] = $memberFirst;
+        $this->result['member'] = $member->find($ID);
 
-        return ['success' => $this->result, 'status' => 200];
+        return $this->result;
     } 
 
     public function delete(string $ID):array
-    {
-        if(empty($ID)) return['error'=> 'Id vazio!', 'status' => 404];
+    {   
+        $this->result['error'] = "O Membro não foi encontrado!";
 
         $member = Member::find($ID);
 
-        if(!$member) return ['error'=> 'Membro não encontrado!', 'status' => 404];
+        if(!$member) return $this->result;
         
         $member->delete();
         
-        $this->result['message'] = "Membro excluído com sucesso!";
+        $this->result['success'] = "Membro excluído com sucesso!";
         
-        return ['success' => $this->result,'status' => 200];
+        return $this->result;
     }
 }
