@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use App\DTO\MemberDTO;
 use App\Http\Requests\MemberRequest;
 use App\Models\Member;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class MemberServices {
@@ -30,22 +32,26 @@ class MemberServices {
         return ['success' => $this->result, 'status' => 200];
     }
 
-    public function create(array $data):array
+    public function create(Request $request):array
     {   
-        $validator = Validator::make($data, MemberRequest::rules());
+        $validator = Validator::make($request->all(), MemberRequest::rulesCreate());
 
         if($validator->fails()) return['error' => $validator->errors()->first(), 'status' => 422];
+
+        $dto = new MemberDTO(
+            ...$request->only([
+                'church_id',
+                'name',
+                'email',
+                'age',
+                'date_admission_church',
+                'phone',
+                'UF',
+                'address'
+            ])
+        );
         
-        $member = new Member();
-        
-        $member->church_id = $data['church_id'];
-        $member->name = $data['name'];
-        $member->email = $data['email'];
-        $member->age = $data['age'];
-        $member->date_admission_church = $data['date_admission_church'];
-        $member->phone = $data['phone'];
-        $member->UF = $data['UF'];
-        $member->address = $data['address'];
+        $member = new Member($dto->toArray());
         $member->save();
 
         $memberFirst = $member->find($member->id);
@@ -55,11 +61,11 @@ class MemberServices {
         return ['success' => $this->result, 'status' => 201];
     }
 
-    public function update(array $data, string $ID):array
+    public function update(Request $request, string $ID):array
     {
-        if(empty($ID)) return ['error'=> 'Id vazio!', 'status' => 404];
+        if(empty($ID)) return ['error'=> 'Id vazio!', 'status' => 404]; 
         
-        $validator = Validator::make($data, MemberRequest::rules());
+        $validator = Validator::make($request->all(), MemberRequest::rules());
 
         if($validator->fails()) return ['error' => $validator->errors()->first(), 'status' => 422];
 
@@ -67,17 +73,22 @@ class MemberServices {
 
         if(!$member) return ['error' => 'Membro não encontrado!', 'status' => 404];
 
-        $member->name = $data['name'];
-        $member->email = $data['email'];
-        $member->age = $data['age'];
-        $member->date_admission_church = $data['date_admission_church'];
-        $member->phone = $data['phone'];
-        $member->UF = $data['UF'];
-        $member->address = $data['address'];
+        $dto = new MemberDTO(
+            ...$request->only([
+                'church_id',
+                'name',
+                'email',
+                'age',
+                'date_admission_church',
+                'phone',
+                'UF',
+                'address'
+            ])
+        );
 
-        $member->save();
+        $member->update($dto->toArray());
 
-        $memberFirst = Member::find($ID);
+        $memberFirst = $member->find($ID);
         $this->result['message'] = "Dados alterados com sucesso!";
         $this->result['member'] = $memberFirst;
 

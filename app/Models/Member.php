@@ -8,6 +8,18 @@ use Illuminate\Database\Eloquent\Model;
 class Member extends Model
 {
     use HasFactory;
+    protected $table = "members";
+    protected $fillable = [
+        'id', 
+        'name', 
+        'email', 
+        'age', 
+        'date_admission_church', 
+        'phone', 
+        'UF', 
+        'address', 
+        'church_id'
+    ];
 
     /**
      * Um modelo Member que pertence a uma Church

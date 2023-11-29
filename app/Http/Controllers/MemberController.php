@@ -15,42 +15,76 @@ class MemberController extends Controller
     
     public function index():object 
     {
-        return response()->json(['members' => $this->memberServices->all()], 200);
+        return response()->json(
+            ['members' => $this->memberServices->all()], 
+            200
+        );
     }
 
     public function edit(string $ID):object
     {
         $result = $this->memberServices->edit($ID);
 
-        if(isset($result['error'])) return response()->json(array('error' => $result['error']), $result['status']);
+        if(isset($result['error'])) return response()->json(
+            array('error' => $result['error']), 
+            $result['status']
+        );
 
-        return response()->json($result['success'], $result['status']);
+        return response()->json(
+            $result['success'], 
+            $result['status']
+        );
     }
 
     public function create(Request $request):object
     {
-        $result = $this->memberServices->create($request->all());
+        $result = $this->memberServices->create(
+            $request
+        );
 
-        if(isset($result['error'])) return response()->json(['error' => $result['error']], $result['status']); 
+        if(isset($result['error'])) return response()->json(
+            ['error' => $result['error']], 
+            $result['status']
+        ); 
 
-        return response()->json($result['success'], $result['status']);
+        return response()->json(
+            $result['success'], 
+            $result['status']
+        );
     }
 
     public function update(Request $request, string $ID):object
     {   
-        $result = $this->memberServices->update($request->all(), $ID);
+        $result = $this->memberServices->update(
+            $request, 
+            $ID
+        );
 
-        if(isset($result['error'])) return response()->json(['error' => $result['error']], $result['status']);
+        if(isset($result['error'])) return response()->json(
+            ['error' => $result['error']], 
+            $result['status']
+        );
 
-        return response()->json($result['success'], $result['status']);
+        return response()->json(
+            $result['success'], 
+            $result['status']
+        );
     }
 
     public function delete(Request $request, string $ID):object
     {
-        $result = $this->memberServices->delete($ID);
+        $result = $this->memberServices->delete(
+            $ID
+        );
 
-        if(isset($result['error'])) return response()->json(['error' => $result['error']], $result['status']); 
+        if(isset($result['error'])) return response()->json(
+            ['error' => $result['error']], 
+            $result['status']
+        ); 
 
-        return response()->json([$result['success']], $result['status']); 
+        return response()->json(
+            [$result['success']], 
+            $result['status']
+        ); 
     }
 }

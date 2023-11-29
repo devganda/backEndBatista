@@ -19,42 +19,77 @@ class ChurchController extends Controller
     public function index():object
     {
         $result = $this->churchServices->all(); 
-        return response()->json(['churches' => $result['success']], $result['status']);
+
+        return response()->json(
+            ['churches' => $result['success']], 
+            $result['status']
+        );
     }
 
      public function create(Request $request):object
     {
         $result = $this->churchServices->create($request);  
 
-        if(isset($result['error'])) return response()->json(['error' =>$result['error']], $result['status']); 
+        if(isset($result['error'])) return response()->json(
+            ['error' =>$result['error']], 
+            $result['status']
+        ); 
 
-        return response()->json([$result['success']], $result['status']);
+        return response()->json(
+            [$result['success']], 
+            $result['status']
+        );
     }
 
     public function edit(string $ID):object
     {
-        $result = $this->churchServices->find($ID);
+        $result = $this->churchServices->find(
+            $ID
+        );
 
-        if(isset($result['error'])) return response()->json(['error' => $result['error']], $result['status']);
+        if(isset($result['error'])) return response()->json(
+            ['error' => $result['error']], 
+            $result['status']
+        );
 
-        return response()->json([$result['success']], $result['status']);
+        return response()->json(
+            [$result['success']], 
+            $result['status']
+        );
     }
 
     public function update(Request $request, string $ID):object
     {   
-        $result = $this->churchServices->update($request, $ID); 
+        $result = $this->churchServices->update(
+            $request, 
+            $ID
+        ); 
 
-        if(isset($result['error'])) return response()->json(['error' => $result['error']], $result['status']);
+        if(isset($result['error'])) return response()->json(
+            ['error' => $result['error']], 
+            $result['status']
+        );
 
-        return response()->json([$result['success']], $result['status']);
+        return response()->json(
+            [$result['success']], 
+            $result['status']
+        );
     }
 
     public function delete(string $ID):object
     {
-        $result = $this->churchServices->delete($ID);
+        $result = $this->churchServices->delete(
+            $ID
+        );
 
-        if(isset($result['error'])) return response()->json(['error' => $result['error']], $result['status'])->json();
+        if(isset($result['error'])) return response()->json(
+            ['error' => $result['error']], 
+            $result['status']
+        );
 
-        return response()->json(['success' => $result['success']], $result['status']);
+        return response()->json(
+            ['success' => $result['success']], 
+            $result['status']
+        );
     }
 }

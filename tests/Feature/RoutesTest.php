@@ -56,7 +56,7 @@ class RoutesTest extends TestCase
         $response->assertStatus(422);
     }
 
-  public function testMemberUpdate():void
+    public function testMemberUpdate():void
     {
         $memberFactory =  new MemberFactory();
 
