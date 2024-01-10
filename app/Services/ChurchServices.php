@@ -1,31 +1,26 @@
-<?php 
+<?php
 
 namespace App\Services;
 
 use App\DTO\ChurchDTO;
 use App\Http\Requests\ChurchRequest;
 use App\Models\Church;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+
 
 class ChurchServices{
 
     private $result = array();
 
-    public function all():array
-    {  
-        return ['success' => Church::all(), 'status' => 200];
+    public function all():Collection
+    {
+       return Church::all();
     }
 
     public function create(Request $request):array
     {
-        $validator = Validator::make( 
-            $request->all(),
-            ChurchRequest::rules()
-        );
-
-        if($validator->fails())return ['error' => $validator->errors()->first(), 'status' => 422];
-
         $dto = new ChurchDTO(
             ...$request->only([
                 'name',
@@ -35,7 +30,7 @@ class ChurchServices{
                 'UF',
                 'date_inauguration'
             ])
-        ); 
+        );
 
         $church = new Church($dto->toArray());
         $church->save();
@@ -43,7 +38,7 @@ class ChurchServices{
         $this->result['message'] = "Instituição criada com sucesso!";
         $this->result['church'] = $churchFirst;
 
-        return ['success' => $this->result, 'status' => 201];
+        return $this->result;
     }
 
     public function find(string $ID):array
@@ -52,10 +47,8 @@ class ChurchServices{
 
         if(!$church) return ['error' => 'Instituição não encontrada', 'status' => 404];
 
-        $church->members;
-
         $this->result['church'] = $church;
-    
+
         return ['success' => $this->result, 'status' => 200];
     }
 
@@ -79,11 +72,11 @@ class ChurchServices{
         $church = Church::find($ID);
 
         if(!$church) return['error' => 'Instituição não encontrada', 'status' => 404];
-    
+
         $church->update($dto->toArray());
 
-        $churchFirst = $church->find($ID); 
-        
+        $churchFirst = $church->find($ID);
+
         $this->result['message'] = 'Instituição atualizada com sucesso!';
         $this->result['church'] = $churchFirst;
 

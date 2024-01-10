@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ChurchRequest;
 use App\Services\ChurchServices;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 
 class ChurchController extends Controller
 {
-    private $result = array();
     private ChurchServices $churchServices;
 
     public function __construct()
@@ -16,29 +19,36 @@ class ChurchController extends Controller
         $this->churchServices = new ChurchServices();
     }
 
-    public function index():object
+    /**
+     * @OA\Get(
+     *      path="/api/church",
+     *      operationId="getChurchList",
+     *      tags={"Church"},
+     *      summary="pega a lista de igrejas",
+     *      @OA\Response(
+     *          response=200,
+     *          description="Lista de Igrejas"
+     *      ),
+     * )
+     */
+    public function index():JsonResponse
     {
-        $result = $this->churchServices->all(); 
+        $churches = $this->churchServices->all();
 
-        return response()->json(
-            ['churches' => $result['success']], 
-            $result['status']
-        );
+        return response()->json(['success' => $churches, 'status' => ResponseAlias::HTTP_OK]);
     }
 
-     public function create(Request $request):object
+     public function create(Request $request):JsonResponse
     {
-        $result = $this->churchServices->create($request);  
+        $validator = Validator::make($request->all(), ChurchRequest::rules());
 
-        if(isset($result['error'])) return response()->json(
-            ['error' =>$result['error']], 
-            $result['status']
-        ); 
+        if($validator->fails()) return response()->json(['error' => $validator->errors()->first(), 'status' => 422]);
 
-        return response()->json(
-            [$result['success']], 
-            $result['status']
-        );
+        $result = $this->churchServices->create($request);
+
+        if(empty($result)) return response()->json(['error' => 'Error na inserção', 'status' => ResponseAlias::HTTP_INTERNAL_SERVER_ERROR]);
+
+        return response()->json(['success' => $result, 'status' => ResponseAlias::HTTP_CREATED]);
     }
 
     public function edit(string $ID):object
@@ -48,30 +58,30 @@ class ChurchController extends Controller
         );
 
         if(isset($result['error'])) return response()->json(
-            ['error' => $result['error']], 
+            ['error' => $result['error']],
             $result['status']
         );
 
         return response()->json(
-            [$result['success']], 
+            [$result['success']],
             $result['status']
         );
     }
 
     public function update(Request $request, string $ID):object
-    {   
+    {
         $result = $this->churchServices->update(
-            $request, 
+            $request,
             $ID
-        ); 
+        );
 
         if(isset($result['error'])) return response()->json(
-            ['error' => $result['error']], 
+            ['error' => $result['error']],
             $result['status']
         );
 
         return response()->json(
-            [$result['success']], 
+            [$result['success']],
             $result['status']
         );
     }
@@ -83,12 +93,12 @@ class ChurchController extends Controller
         );
 
         if(isset($result['error'])) return response()->json(
-            ['error' => $result['error']], 
+            ['error' => $result['error']],
             $result['status']
         );
 
         return response()->json(
-            ['success' => $result['success']], 
+            ['success' => $result['success']],
             $result['status']
         );
     }
