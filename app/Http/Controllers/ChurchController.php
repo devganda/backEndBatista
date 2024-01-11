@@ -7,10 +7,12 @@ use App\Services\ChurchServices;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
+use App\Interface\ChurchInterface;
 
 
-class ChurchController extends Controller
+class ChurchController extends Controller implements ChurchInterface
 {
     private ChurchServices $churchServices;
 
@@ -27,7 +29,22 @@ class ChurchController extends Controller
      *      summary="pega a lista de igrejas",
      *      @OA\Response(
      *          response=200,
-     *          description="Lista de Igrejas"
+     *          description="Sucesso",
+     *          @OA\JsonContent(
+     *            type="array",
+     *            @OA\Items(
+     *              type="object",
+     *              @OA\Property(property="id", type="integer", description="ID da igreja"),
+     *              @OA\Property(property="name", type="string", description="Nome da igreja"),
+     *              @OA\Property(property="email", type="string", description="Email da igreja"),
+     *              @OA\Property(property="address", type="string", description="Endereço da igreja"),
+     *              @OA\Property(property="cnpj", type="string", description="CNPJ da igreja"),
+     *              @OA\Property(property="UF", type="string", description="UF da igreja"),
+     *              @OA\Property(property="date_inauguration", type="string", format="date", description="Data de inauguração da igreja"),
+     *              @OA\Property(property="created_at", type="string", format="date-time", description="Data e hora de criação"),
+     *              @OA\Property(property="updated_at", type="string", format="date-time", description="Data e hora de atualização"),
+     *           )
+     *         )
      *      ),
      * )
      */
@@ -35,71 +52,299 @@ class ChurchController extends Controller
     {
         $churches = $this->churchServices->all();
 
-        return response()->json(['success' => $churches, 'status' => ResponseAlias::HTTP_OK]);
+        return response()->json($churches,ResponseAlias::HTTP_OK);
     }
 
+    /**
+     * @OA\Post(
+     *      path="/api/church/create",
+     *      operationId="postChurchCreate",
+     *      tags={"Church"},
+     *      summary="adiciona uma igreja",
+     *     @OA\RequestBody(
+     *           required=true,
+     *           description="User object precisa para adicionar uma igreja",
+     *          @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(property="name", type="string", description="Nome da igreja"),
+     *              @OA\Property(property="email", type="string", format="email", description="Email da igreja"),
+     *              @OA\Property(property="address", type="string", description="Endereço da igreja"),
+     *              @OA\Property(property="cnpj", type="string", description="cnpj da igreja"),
+     *              @OA\Property(property="UF", type="string", description="Estado da igreja"),
+     *              @OA\Property(property="date_inauguration", type="string", format="date", description="data de inauguração da igreja")
+     *          )
+     *       ),
+     *      @OA\Response(
+     *          response=400,
+     *          description="parametro inválido",
+     *          @OA\JsonContent(
+ *                type="object",
+ *                @OA\Property(property="error", type="string", description="Mensagem de erro"),
+     *          )
+     *      ),
+     *     @OA\Response(
+     *           response=500,
+     *           description="Error",
+     *           @OA\JsonContent(
+     *               type="object",
+     *               @OA\Property(property="error", type="string", description="Mensagem de erro"),
+     *           )
+     *       ),
+     *     @OA\Response(
+     *           response=201,
+     *           description="criado",
+     *          @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(property="message", type="string", description="Mensagem de sucesso"),
+     *              @OA\Property(
+     *                  property="church",
+     *                  type="object",
+     *                  @OA\Property(property="id", type="integer", description="ID da igreja"),
+     *                  @OA\Property(property="name", type="string", description="Nome da igreja"),
+     *                  @OA\Property(property="email", type="string", description="Email da igreja"),
+     *                  @OA\Property(property="address", type="string", description="Endereço da igreja"),
+     *                  @OA\Property(property="cnpj", type="string", description="CNPJ da igreja"),
+     *                  @OA\Property(property="UF", type="string", description="UF da igreja"),
+     *                  @OA\Property(property="date_inauguration", type="string", format="date", description="Data de inauguração da igreja"),
+     *                  @OA\Property(property="created_at", type="string", format="date-time", description="Data e hora de criação"),
+     *                  @OA\Property(property="updated_at", type="string", format="date-time", description="Data e hora de atualização"),
+     *              )
+     *          )
+     *       ),
+     * )
+     */
      public function create(Request $request):JsonResponse
     {
         $validator = Validator::make($request->all(), ChurchRequest::rules());
 
-        if($validator->fails()) return response()->json(['error' => $validator->errors()->first(), 'status' => 422]);
+        if($validator->fails()) return response()->json(['error' => $validator->errors()->first()],ResponseAlias::HTTP_BAD_REQUEST);
 
         $result = $this->churchServices->create($request);
 
-        if(empty($result)) return response()->json(['error' => 'Error na inserção', 'status' => ResponseAlias::HTTP_INTERNAL_SERVER_ERROR]);
+        if(empty($result)) return response()->json(
+            ['error' => 'Error na inserção'],
+            ResponseAlias::HTTP_INTERNAL_SERVER_ERROR
+        );
 
-        return response()->json(['success' => $result, 'status' => ResponseAlias::HTTP_CREATED]);
+        return response()->json($result, ResponseAlias::HTTP_CREATED);
     }
 
-    public function edit(string $ID):object
+    /**
+     * @OA\Get(
+     *      path="/api/church/edit/{id}",
+     *      operationId="getChurchListByID",
+     *      tags={"Church"},
+     *      summary="pega as info de uma igreja em especifico",
+     *     @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          required=true,
+     *          description="ID da igreja",
+     *          @OA\Schema(type="integer")
+     *      ),
+     *     @OA\Response(
+     *           response=400,
+     *           description="parametro inválido",
+     *           @OA\JsonContent(
+     *                 type="object",
+     *                 @OA\Property(property="error", type="string", description="Mensagem de erro"),
+     *           )
+     *       ),
+     *     @OA\Response(
+     *            response=500,
+     *            description="Error",
+     *            @OA\JsonContent(
+     *                type="object",
+     *                @OA\Property(property="error", type="string", description="Mensagem de erro"),
+     *            )
+     *        ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Sucesso",
+     *          @OA\JsonContent(
+     *            type="object",
+     *            @OA\Property(
+     *               property="church",
+     *               type="object",
+     *               @OA\Property(property="id", type="integer", description="ID da igreja"),
+     *               @OA\Property(property="name", type="string", description="Nome da igreja"),
+     *               @OA\Property(property="email", type="string", description="Email da igreja"),
+     *               @OA\Property(property="address", type="string", description="Endereço da igreja"),
+     *               @OA\Property(property="cnpj", type="string", description="CNPJ da igreja"),
+     *               @OA\Property(property="UF", type="string", description="UF da igreja"),
+     *               @OA\Property(property="date_inauguration", type="string", format="date", description="Data de inauguração da igreja"),
+     *               @OA\Property(property="created_at", type="string", format="date-time", description="Data e hora de criação"),
+     *               @OA\Property(property="updated_at", type="string", format="date-time", description="Data e hora de atualização"),
+     *            )
+     *         )
+     *      ),
+     * )
+     */
+    public function edit(string $ID):JsonResponse
     {
-        $result = $this->churchServices->find(
-            $ID
+        if (empty($ID)) return response()->json(
+            [
+                'error' => 'O parâmetro ID está vazio!',
+                'status' => ResponseAlias::HTTP_BAD_REQUEST
+            ]
         );
 
-        if(isset($result['error'])) return response()->json(
-            ['error' => $result['error']],
-            $result['status']
-        );
+        $result = $this->churchServices->find($ID);
 
-        return response()->json(
-            [$result['success']],
-            $result['status']
-        );
+        if(isset($result['error'])) return response()->json($result, ResponseAlias::HTTP_NOT_FOUND);
+
+        return response()->json($result, ResponseAlias::HTTP_OK);
     }
 
-    public function update(Request $request, string $ID):object
+    /**
+     * @OA\Put(
+     *      path="/api/church/update/{id}",
+     *      operationId="putChurchUpdate",
+     *      tags={"Church"},
+     *      summary="atualiza uma igreja",
+     *      @OA\Parameter(
+     *           name="id",
+     *           in="path",
+     *           required=true,
+     *           description="ID da igreja",
+     *           @OA\Schema(type="integer")
+     *       ),
+     *     @OA\RequestBody(
+     *           required=true,
+     *           description="atualiza os dados de uma igreja",
+     *          @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(property="name", type="string", description="Nome da igreja"),
+     *              @OA\Property(property="email", type="string", format="email", description="Email da igreja"),
+     *              @OA\Property(property="address", type="string", description="Endereço da igreja"),
+     *              @OA\Property(property="cnpj", type="string", description="cnpj da igreja"),
+     *              @OA\Property(property="UF", type="string", description="Estado da igreja"),
+     *              @OA\Property(property="date_inauguration", type="string", format="date", description="data de inauguração da igreja")
+     *          )
+     *       ),
+     *      @OA\Response(
+     *          response=400,
+     *          description="parametro inválido",
+     *          @OA\JsonContent(
+     *                type="object",
+     *                @OA\Property(property="error", type="string", description="Mensagem de erro"),
+     *          )
+     *      ),
+     *     @OA\Response(
+     *           response=500,
+     *           description="Error",
+     *           @OA\JsonContent(
+     *               type="object",
+     *               @OA\Property(property="error", type="string", description="Mensagem de erro"),
+     *           )
+     *       ),
+     *     @OA\Response(
+     *           response=200,
+     *           description="Sucesso",
+     *          @OA\JsonContent(
+     *              type="object",
+     *              @OA\Property(property="message", type="string", description="Mensagem de sucesso"),
+     *              @OA\Property(
+     *                  property="church",
+     *                  type="object",
+     *                  @OA\Property(property="id", type="integer", description="ID da igreja"),
+     *                  @OA\Property(property="name", type="string", description="Nome da igreja"),
+     *                  @OA\Property(property="email", type="string", description="Email da igreja"),
+     *                  @OA\Property(property="address", type="string", description="Endereço da igreja"),
+     *                  @OA\Property(property="cnpj", type="string", description="CNPJ da igreja"),
+     *                  @OA\Property(property="UF", type="string", description="UF da igreja"),
+     *                  @OA\Property(property="date_inauguration", type="string", format="date", description="Data de inauguração da igreja"),
+     *                  @OA\Property(property="created_at", type="string", format="date-time", description="Data e hora de criação"),
+     *                  @OA\Property(property="updated_at", type="string", format="date-time", description="Data e hora de atualização"),
+     *              )
+     *          )
+     *       ),
+     * )
+     */
+    public function update(Request $request, string $ID):JsonResponse
     {
+        $validator = Validator::make($request->all(), ChurchRequest::rules());
+
+        if($validator->fails()) return response()->json(
+            ['error' => $validator->errors()->first()],
+            ResponseAlias::HTTP_BAD_REQUEST
+        );
+
         $result = $this->churchServices->update(
             $request,
             $ID
         );
 
         if(isset($result['error'])) return response()->json(
-            ['error' => $result['error']],
-            $result['status']
+            $result,
+            ResponseAlias::HTTP_NOT_FOUND
         );
 
         return response()->json(
-            [$result['success']],
-            $result['status']
+           $result,
+            ResponseAlias::HTTP_OK
         );
     }
 
-    public function delete(string $ID):object
+    /**
+     * @OA\Delete(
+     *      path="/api/church/delete/{id}",
+     *      operationId="deleteChurchListByID",
+     *      tags={"Church"},
+     *      summary="deleta as info de uma igreja em especifico",
+     *     @OA\Parameter(
+     *          name="id",
+     *          in="path",
+     *          required=true,
+     *          description="ID da igreja",
+     *          @OA\Schema(type="integer")
+     *      ),
+     *     @OA\Response(
+     *           response=400,
+     *           description="parametro inválido",
+     *           @OA\JsonContent(
+     *                 type="object",
+     *                 @OA\Property(property="error", type="string", description="Mensagem de erro"),
+     *           )
+     *       ),
+     *     @OA\Response(
+     *            response=404,
+     *            description="Error",
+     *            @OA\JsonContent(
+     *                type="object",
+     *                @OA\Property(property="error", type="string", description="Mensagem de erro"),
+     *            )
+     *        ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="Sucesso",
+     *          @OA\JsonContent(
+     *            type="object",
+     *            @OA\Property(
+     *               property="message",
+     *               type="string",
+     *            )
+     *         )
+     *      ),
+     * )
+     */
+    public function delete(string $ID):JsonResponse
     {
-        $result = $this->churchServices->delete(
-            $ID
+        if (empty($ID)) return response()->json(
+            ['error' => 'O parâmetro ID está vazio!'],
+            ResponseAlias::HTTP_BAD_REQUEST
         );
 
+        $result = $this->churchServices->delete($ID);
+
         if(isset($result['error'])) return response()->json(
-            ['error' => $result['error']],
-            $result['status']
+            $result,
+            ResponseAlias::HTTP_NOT_FOUND
         );
 
         return response()->json(
-            ['success' => $result['success']],
-            $result['status']
+            $result,
+            ResponseAlias::HTTP_OK
         );
     }
 }
