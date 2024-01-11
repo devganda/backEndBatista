@@ -19,11 +19,536 @@
                 "tags": [
                     "Church"
                 ],
-                "summary": "Get the list of churches",
+                "summary": "pega a lista de igrejas",
                 "operationId": "getChurchList",
                 "responses": {
                     "200": {
-                        "description": "Lista de Igrejas"
+                        "description": "Sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "description": "ID da igreja",
+                                                "type": "integer"
+                                            },
+                                            "name": {
+                                                "description": "Nome da igreja",
+                                                "type": "string"
+                                            },
+                                            "email": {
+                                                "description": "Email da igreja",
+                                                "type": "string"
+                                            },
+                                            "address": {
+                                                "description": "Endereço da igreja",
+                                                "type": "string"
+                                            },
+                                            "cnpj": {
+                                                "description": "CNPJ da igreja",
+                                                "type": "string"
+                                            },
+                                            "UF": {
+                                                "description": "UF da igreja",
+                                                "type": "string"
+                                            },
+                                            "date_inauguration": {
+                                                "description": "Data de inauguração da igreja",
+                                                "type": "string",
+                                                "format": "date"
+                                            },
+                                            "created_at": {
+                                                "description": "Data e hora de criação",
+                                                "type": "string",
+                                                "format": "date-time"
+                                            },
+                                            "updated_at": {
+                                                "description": "Data e hora de atualização",
+                                                "type": "string",
+                                                "format": "date-time"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/church/create": {
+            "post": {
+                "tags": [
+                    "Church"
+                ],
+                "summary": "adiciona uma igreja",
+                "operationId": "postChurchCreate",
+                "requestBody": {
+                    "description": "User object precisa para adicionar uma igreja",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "Nome da igreja",
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "description": "Email da igreja",
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "address": {
+                                        "description": "Endereço da igreja",
+                                        "type": "string"
+                                    },
+                                    "cnpj": {
+                                        "description": "cnpj da igreja",
+                                        "type": "string"
+                                    },
+                                    "UF": {
+                                        "description": "Estado da igreja",
+                                        "type": "string"
+                                    },
+                                    "date_inauguration": {
+                                        "description": "data de inauguração da igreja",
+                                        "type": "string",
+                                        "format": "date"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "parametro inválido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "Mensagem de erro",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "Mensagem de erro",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "criado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "description": "Mensagem de sucesso",
+                                            "type": "string"
+                                        },
+                                        "church": {
+                                            "properties": {
+                                                "id": {
+                                                    "description": "ID da igreja",
+                                                    "type": "integer"
+                                                },
+                                                "name": {
+                                                    "description": "Nome da igreja",
+                                                    "type": "string"
+                                                },
+                                                "email": {
+                                                    "description": "Email da igreja",
+                                                    "type": "string"
+                                                },
+                                                "address": {
+                                                    "description": "Endereço da igreja",
+                                                    "type": "string"
+                                                },
+                                                "cnpj": {
+                                                    "description": "CNPJ da igreja",
+                                                    "type": "string"
+                                                },
+                                                "UF": {
+                                                    "description": "UF da igreja",
+                                                    "type": "string"
+                                                },
+                                                "date_inauguration": {
+                                                    "description": "Data de inauguração da igreja",
+                                                    "type": "string",
+                                                    "format": "date"
+                                                },
+                                                "created_at": {
+                                                    "description": "Data e hora de criação",
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "description": "Data e hora de atualização",
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/church/edit/{id}": {
+            "get": {
+                "tags": [
+                    "Church"
+                ],
+                "summary": "pega as info de uma igreja em especifico",
+                "operationId": "getChurchListByID",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID da igreja",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "parametro inválido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "Mensagem de erro",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "Mensagem de erro",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "church": {
+                                            "properties": {
+                                                "id": {
+                                                    "description": "ID da igreja",
+                                                    "type": "integer"
+                                                },
+                                                "name": {
+                                                    "description": "Nome da igreja",
+                                                    "type": "string"
+                                                },
+                                                "email": {
+                                                    "description": "Email da igreja",
+                                                    "type": "string"
+                                                },
+                                                "address": {
+                                                    "description": "Endereço da igreja",
+                                                    "type": "string"
+                                                },
+                                                "cnpj": {
+                                                    "description": "CNPJ da igreja",
+                                                    "type": "string"
+                                                },
+                                                "UF": {
+                                                    "description": "UF da igreja",
+                                                    "type": "string"
+                                                },
+                                                "date_inauguration": {
+                                                    "description": "Data de inauguração da igreja",
+                                                    "type": "string",
+                                                    "format": "date"
+                                                },
+                                                "created_at": {
+                                                    "description": "Data e hora de criação",
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "description": "Data e hora de atualização",
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/church/update/{id}": {
+            "put": {
+                "tags": [
+                    "Church"
+                ],
+                "summary": "atualiza uma igreja",
+                "operationId": "putChurchUpdate",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID da igreja",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "atualiza os dados de uma igreja",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "Nome da igreja",
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "description": "Email da igreja",
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "address": {
+                                        "description": "Endereço da igreja",
+                                        "type": "string"
+                                    },
+                                    "cnpj": {
+                                        "description": "cnpj da igreja",
+                                        "type": "string"
+                                    },
+                                    "UF": {
+                                        "description": "Estado da igreja",
+                                        "type": "string"
+                                    },
+                                    "date_inauguration": {
+                                        "description": "data de inauguração da igreja",
+                                        "type": "string",
+                                        "format": "date"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "parametro inválido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "Mensagem de erro",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "Mensagem de erro",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "description": "Mensagem de sucesso",
+                                            "type": "string"
+                                        },
+                                        "church": {
+                                            "properties": {
+                                                "id": {
+                                                    "description": "ID da igreja",
+                                                    "type": "integer"
+                                                },
+                                                "name": {
+                                                    "description": "Nome da igreja",
+                                                    "type": "string"
+                                                },
+                                                "email": {
+                                                    "description": "Email da igreja",
+                                                    "type": "string"
+                                                },
+                                                "address": {
+                                                    "description": "Endereço da igreja",
+                                                    "type": "string"
+                                                },
+                                                "cnpj": {
+                                                    "description": "CNPJ da igreja",
+                                                    "type": "string"
+                                                },
+                                                "UF": {
+                                                    "description": "UF da igreja",
+                                                    "type": "string"
+                                                },
+                                                "date_inauguration": {
+                                                    "description": "Data de inauguração da igreja",
+                                                    "type": "string",
+                                                    "format": "date"
+                                                },
+                                                "created_at": {
+                                                    "description": "Data e hora de criação",
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "description": "Data e hora de atualização",
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/church/delete/{id}": {
+            "delete": {
+                "tags": [
+                    "Church"
+                ],
+                "summary": "deleta as info de uma igreja em especifico",
+                "operationId": "deleteChurchListByID",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID da igreja",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "parametro inválido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "Mensagem de erro",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "Mensagem de erro",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
