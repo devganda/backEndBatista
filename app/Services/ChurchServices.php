@@ -3,12 +3,9 @@
 namespace App\Services;
 
 use App\DTO\ChurchDTO;
-use App\Http\Requests\ChurchRequest;
 use App\Models\Church;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-
 
 class ChurchServices{
 
@@ -45,18 +42,15 @@ class ChurchServices{
     {
         $church = Church::find($ID);
 
-        if(!$church) return ['error' => 'Instituição não encontrada', 'status' => 404];
+        if(!$church) return ['error' => 'Instituição não encontrada'];
 
         $this->result['church'] = $church;
 
-        return ['success' => $this->result, 'status' => 200];
+        return $this->result;
     }
 
     public function update(Request $request, string $ID):array
     {
-        $validator = Validator::make($request->all(), ChurchRequest::rules());
-
-        if($validator->fails()) return ['error' => $validator->errors()->first(), 'status' => 422];
 
         $dto = new ChurchDTO(
             ...$request->only([
@@ -71,7 +65,7 @@ class ChurchServices{
 
         $church = Church::find($ID);
 
-        if(!$church) return['error' => 'Instituição não encontrada', 'status' => 404];
+        if(!$church) return ['error' => 'Instituição não encontrada'];
 
         $church->update($dto->toArray());
 
@@ -80,17 +74,17 @@ class ChurchServices{
         $this->result['message'] = 'Instituição atualizada com sucesso!';
         $this->result['church'] = $churchFirst;
 
-        return ['success' => $this->result,'status' => 200];
+        return $this->result;
     }
 
     public function delete(string $ID):array
     {
         $church = Church::find($ID);
 
-        if(!$church) return ['error' => 'Instituição não encontrada', 'status' => 404];
+        if(!$church) return ['error' => 'Instituição não encontrada'];
 
         $church->delete();
 
-        return ['success' => 'Instituição deletada com sucesso!', 'status' => 200];
+        return ['message' => 'Instituição deletada com sucesso!'];
     }
 }
