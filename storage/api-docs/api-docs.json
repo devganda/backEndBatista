@@ -552,6 +552,772 @@
                     }
                 }
             }
+        },
+        "/api/members": {
+            "get": {
+                "tags": [
+                    "Members"
+                ],
+                "summary": "pega a lista de todos os membros",
+                "operationId": "getMembersList",
+                "responses": {
+                    "200": {
+                        "description": "Sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "description": "ID do membro",
+                                                "type": "integer"
+                                            },
+                                            "church_id": {
+                                                "description": "ID da igreja",
+                                                "type": "integer"
+                                            },
+                                            "name": {
+                                                "description": "Nome do membro",
+                                                "type": "string"
+                                            },
+                                            "email": {
+                                                "description": "Email do membro",
+                                                "type": "string"
+                                            },
+                                            "age": {
+                                                "description": "Idade do membro",
+                                                "type": "integer"
+                                            },
+                                            "date_admission_church": {
+                                                "description": "data de admissão do membro",
+                                                "type": "string",
+                                                "format": "date"
+                                            },
+                                            "phone": {
+                                                "description": "Númeto celular do membro",
+                                                "type": "string"
+                                            },
+                                            "UF": {
+                                                "description": "Estado do membro",
+                                                "type": "string",
+                                                "format": "string"
+                                            },
+                                            "address": {
+                                                "description": "Endereço do membro",
+                                                "type": "string",
+                                                "format": "string"
+                                            },
+                                            "created_at": {
+                                                "description": "Data e hora de criação",
+                                                "type": "string",
+                                                "format": "date-time"
+                                            },
+                                            "updated_at": {
+                                                "description": "Data e hora de atualização",
+                                                "type": "string",
+                                                "format": "date-time"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/members/edit/{id}": {
+            "get": {
+                "tags": [
+                    "Members"
+                ],
+                "summary": "pega as info de um membro especifico",
+                "operationId": "getMemberListByID",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do membro",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "parametro inválido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "Mensagem de erro",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "Mensagem de erro",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "member": {
+                                            "properties": {
+                                                "id": {
+                                                    "description": "ID do membro",
+                                                    "type": "integer"
+                                                },
+                                                "church_id": {
+                                                    "description": "ID da igreja",
+                                                    "type": "integer"
+                                                },
+                                                "name": {
+                                                    "description": "Nome do membro",
+                                                    "type": "string"
+                                                },
+                                                "email": {
+                                                    "description": "Email do membro",
+                                                    "type": "string"
+                                                },
+                                                "age": {
+                                                    "description": "Idade do membro",
+                                                    "type": "integer"
+                                                },
+                                                "date_admission_church": {
+                                                    "description": "data de admissão do membro",
+                                                    "type": "string",
+                                                    "format": "date"
+                                                },
+                                                "phone": {
+                                                    "description": "Númeto celular do membro",
+                                                    "type": "string"
+                                                },
+                                                "UF": {
+                                                    "description": "Estado do membro",
+                                                    "type": "string",
+                                                    "format": "string"
+                                                },
+                                                "address": {
+                                                    "description": "Endereço do membro",
+                                                    "type": "string",
+                                                    "format": "string"
+                                                },
+                                                "created_at": {
+                                                    "description": "Data e hora de criação",
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "description": "Data e hora de atualização",
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "church": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "description": "ID da igreja",
+                                                            "type": "integer"
+                                                        },
+                                                        "name": {
+                                                            "description": "Nome da igreja",
+                                                            "type": "string"
+                                                        },
+                                                        "email": {
+                                                            "description": "Email da igreja",
+                                                            "type": "string"
+                                                        },
+                                                        "address": {
+                                                            "description": "Endereço da igreja",
+                                                            "type": "string"
+                                                        },
+                                                        "cnpj": {
+                                                            "description": "CNPJ da igreja",
+                                                            "type": "string"
+                                                        },
+                                                        "UF": {
+                                                            "description": "UF da igreja",
+                                                            "type": "string"
+                                                        },
+                                                        "date_inauguration": {
+                                                            "description": "Data de inauguração da igreja",
+                                                            "type": "string",
+                                                            "format": "date"
+                                                        },
+                                                        "created_at": {
+                                                            "description": "Data e hora de criação",
+                                                            "type": "string",
+                                                            "format": "date-time"
+                                                        },
+                                                        "updated_at": {
+                                                            "description": "Data e hora de atualização",
+                                                            "type": "string",
+                                                            "format": "date-time"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/members/create": {
+            "post": {
+                "tags": [
+                    "Members"
+                ],
+                "summary": "adiciona um membro",
+                "operationId": "postMemberCreate",
+                "requestBody": {
+                    "description": "User object precisa para adicionar uma igreja",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "church_id": {
+                                        "description": "ID da igreja",
+                                        "type": "integer"
+                                    },
+                                    "name": {
+                                        "description": "Nome do membro",
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "description": "Email do membro",
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "age": {
+                                        "description": "Idade do membro",
+                                        "type": "integer"
+                                    },
+                                    "date_admission_church": {
+                                        "description": "data de admissão do membro",
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "phone": {
+                                        "description": "Númeto celular do membro",
+                                        "type": "string"
+                                    },
+                                    "UF": {
+                                        "description": "Estado do membro",
+                                        "type": "string",
+                                        "format": "string"
+                                    },
+                                    "address": {
+                                        "description": "Endereço do membro",
+                                        "type": "string",
+                                        "format": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "parametro inválido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "Mensagem de erro",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "Mensagem de erro",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "model Member",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "description": "Mensagem de sucesso",
+                                            "type": "string"
+                                        },
+                                        "member": {
+                                            "properties": {
+                                                "id": {
+                                                    "description": "ID do membro",
+                                                    "type": "integer"
+                                                },
+                                                "church_id": {
+                                                    "description": "ID da igreja",
+                                                    "type": "integer"
+                                                },
+                                                "name": {
+                                                    "description": "Nome do membro",
+                                                    "type": "string"
+                                                },
+                                                "email": {
+                                                    "description": "Email do membro",
+                                                    "type": "string"
+                                                },
+                                                "age": {
+                                                    "description": "Idade do membro",
+                                                    "type": "integer"
+                                                },
+                                                "date_admission_church": {
+                                                    "description": "data de admissão do membro",
+                                                    "type": "string",
+                                                    "format": "date"
+                                                },
+                                                "phone": {
+                                                    "description": "Númeto celular do membro",
+                                                    "type": "string"
+                                                },
+                                                "UF": {
+                                                    "description": "Estado do membro",
+                                                    "type": "string",
+                                                    "format": "string"
+                                                },
+                                                "address": {
+                                                    "description": "Endereço do membro",
+                                                    "type": "string",
+                                                    "format": "string"
+                                                },
+                                                "created_at": {
+                                                    "description": "Data e hora de criação",
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "description": "Data e hora de atualização",
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/members/show/{id}": {
+            "get": {
+                "tags": [
+                    "Members"
+                ],
+                "summary": "pega as info de um membro especifico",
+                "operationId": "getMemberListByIDChurch",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID da Igreja",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "parametro inválido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "Mensagem de erro",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "Mensagem de erro",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "members": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "description": "ID do membro",
+                                                        "type": "integer"
+                                                    },
+                                                    "church_id": {
+                                                        "description": "ID da igreja",
+                                                        "type": "integer"
+                                                    },
+                                                    "name": {
+                                                        "description": "Nome do membro",
+                                                        "type": "string"
+                                                    },
+                                                    "email": {
+                                                        "description": "Email do membro",
+                                                        "type": "string"
+                                                    },
+                                                    "age": {
+                                                        "description": "Idade do membro",
+                                                        "type": "integer"
+                                                    },
+                                                    "date_admission_church": {
+                                                        "description": "data de admissão do membro",
+                                                        "type": "string",
+                                                        "format": "date"
+                                                    },
+                                                    "phone": {
+                                                        "description": "Númeto celular do membro",
+                                                        "type": "string"
+                                                    },
+                                                    "UF": {
+                                                        "description": "Estado do membro",
+                                                        "type": "string",
+                                                        "format": "string"
+                                                    },
+                                                    "address": {
+                                                        "description": "Endereço do membro",
+                                                        "type": "string",
+                                                        "format": "string"
+                                                    },
+                                                    "created_at": {
+                                                        "description": "Data e hora de criação",
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    },
+                                                    "updated_at": {
+                                                        "description": "Data e hora de atualização",
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/members/update/{id}": {
+            "put": {
+                "tags": [
+                    "Members"
+                ],
+                "summary": "atualiza um membro",
+                "operationId": "putMemberUpdate",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do membro",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "atualiza os dados de um membro",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "church_id": {
+                                        "description": "ID da igreja",
+                                        "type": "integer"
+                                    },
+                                    "name": {
+                                        "description": "Nome do membro",
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "description": "Email do membro",
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "age": {
+                                        "description": "Idade do membro",
+                                        "type": "integer"
+                                    },
+                                    "date_admission_church": {
+                                        "description": "data de admissão do membro",
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "phone": {
+                                        "description": "Númeto celular do membro",
+                                        "type": "string"
+                                    },
+                                    "UF": {
+                                        "description": "Estado do membro",
+                                        "type": "string",
+                                        "format": "string"
+                                    },
+                                    "address": {
+                                        "description": "Endereço do membro",
+                                        "type": "string",
+                                        "format": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "parametro inválido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "Mensagem de erro",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "Mensagem de erro",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "description": "Mensagem de sucesso",
+                                            "type": "string"
+                                        },
+                                        "member": {
+                                            "properties": {
+                                                "id": {
+                                                    "description": "ID do membro",
+                                                    "type": "integer"
+                                                },
+                                                "church_id": {
+                                                    "description": "ID da igreja",
+                                                    "type": "integer"
+                                                },
+                                                "name": {
+                                                    "description": "Nome do membro",
+                                                    "type": "string"
+                                                },
+                                                "email": {
+                                                    "description": "Email do membro",
+                                                    "type": "string"
+                                                },
+                                                "age": {
+                                                    "description": "Idade do membro",
+                                                    "type": "integer"
+                                                },
+                                                "date_admission_church": {
+                                                    "description": "data de admissão do membro",
+                                                    "type": "string",
+                                                    "format": "date"
+                                                },
+                                                "phone": {
+                                                    "description": "Númeto celular do membro",
+                                                    "type": "string"
+                                                },
+                                                "UF": {
+                                                    "description": "Estado do membro",
+                                                    "type": "string",
+                                                    "format": "string"
+                                                },
+                                                "address": {
+                                                    "description": "Endereço do membro",
+                                                    "type": "string",
+                                                    "format": "string"
+                                                },
+                                                "created_at": {
+                                                    "description": "Data e hora de criação",
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "description": "Data e hora de atualização",
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/members/delete/{id}": {
+            "delete": {
+                "tags": [
+                    "Members"
+                ],
+                "summary": "deleta as info de um membro",
+                "operationId": "deleteMemberListByID",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do membro",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "parametro inválido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "Mensagem de erro",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "description": "Mensagem de erro",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
