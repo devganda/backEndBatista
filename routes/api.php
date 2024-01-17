@@ -29,6 +29,7 @@ Route::delete('/church/delete/{id}', [ChurchController::class, 'delete']);
 Route::get('/members', [MemberController::class, 'index']);
 Route::post('/members/create', [MemberController::class, 'create']);
 Route::get('/members/edit/{id}', [MemberController::class, 'edit']);
+Route::get('/members/show/{id}', [MemberController::class, 'findMembersByChurchID']);
 Route::put('/members/update/{id}', [MemberController::class, 'update']);
 Route::delete('/members/delete/{id}', [MemberController::class, 'delete']);
 
