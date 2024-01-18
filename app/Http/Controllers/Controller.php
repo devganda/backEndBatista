@@ -18,6 +18,7 @@ use Illuminate\Routing\Controller as BaseController;
  *          name="batista",
  *          url="#"
  *      )
+ *
  * )
  */
 class Controller extends BaseController

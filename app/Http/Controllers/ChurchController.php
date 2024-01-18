@@ -27,6 +27,7 @@ class ChurchController extends Controller implements ChurchInterface
      *      operationId="getChurchList",
      *      tags={"Church"},
      *      summary="pega a lista de igrejas",
+     *      security={{"bearer": {}}},
      *      @OA\Response(
      *          response=200,
      *          description="Sucesso",
@@ -46,6 +47,15 @@ class ChurchController extends Controller implements ChurchInterface
      *           )
      *         )
      *      ),
+     *
+     *     @OA\Response(
+     *           response=401,
+     *           description="token inválido",
+     *           @OA\JsonContent(
+     *                 type="object",
+     *                 @OA\Property(property="error", type="string", description="Unauthorized"),
+     *           )
+     *       ),
      * )
      */
     public function index():JsonResponse
