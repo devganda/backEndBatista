@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UserRequest;
+use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -12,9 +13,13 @@ class UserController extends Controller
 {
     private array $response = array();
 
+    public function __construct(
+        protected readonly UserService $userService
+    ){}
+
     /**
      * @OA\Post(
-     *      path="/api/user/register",
+     *      path="/api/register",
      *      operationId="postUserCreate",
      *      tags={"Users"},
      *      summary="adiciona um usuário",
@@ -25,6 +30,7 @@ class UserController extends Controller
      *              type="object",
      *               @OA\Property(property="name", type="string", description="Nome do usuário"),
      *               @OA\Property(property="email", type="string", format="email", description="Email do usuário"),
+     *               @OA\Property(property="email_verified_at", type="string", format="email", description="confirmação do email do usuário"),
      *               @OA\Property(property="password", type="string", description="senha do usuário")
      *          )
      *       ),
@@ -36,14 +42,6 @@ class UserController extends Controller
      *                @OA\Property(property="error", type="string", description="Mensagem de erro"),
      *          )
      *      ),
-     *     @OA\Response(
-     *           response=500,
-     *           description="Error",
-     *           @OA\JsonContent(
-     *               type="object",
-     *               @OA\Property(property="error", type="string", description="Mensagem de erro"),
-     *           )
-     *       ),
      *     @OA\Response(
      *           response=201,
      *           description="model Member",
@@ -62,7 +60,7 @@ class UserController extends Controller
             return response()->json($this->response,Response::HTTP_BAD_REQUEST);
         }
 
-
-        return response()->json();
+        $this->response = $this->userService->create($request);
+        return response()->json($this->response, Response::HTTP_CREATED);
     }
 }
