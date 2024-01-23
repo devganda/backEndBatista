@@ -6,6 +6,7 @@ use App\Interface\MemberInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Services\MemberServices;
+use OpenApi\Annotations as OA;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
 
