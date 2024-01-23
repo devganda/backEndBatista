@@ -22,4 +22,9 @@ class Church extends Model
         return $this->hasMany(Member::class, 'church_id', 'id');
     }
 
+    public function users():hasMany
+    {
+        return $this->hasMany(User::class);
+    }
+
 }
