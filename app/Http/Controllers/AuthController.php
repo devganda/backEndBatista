@@ -7,6 +7,7 @@ use App\Services\AuthServices;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
@@ -16,8 +17,6 @@ class AuthController extends Controller
     public function __construct(
         protected readonly AuthServices $authServices
     ){}
-
-    //1|Oa8FBLB72Uq10dJsJdgZwDIKdaFF0GR4Rm3tIlWf88b9b679
 
     /**
      * @OA\Post(
@@ -30,8 +29,8 @@ class AuthController extends Controller
      *           description="User object precisa para fazer o login",
      *          @OA\JsonContent(
      *              type="object",
-     *               @OA\Property(property="email", type="string", format="email", description="Email do usuário"),
-     *               @OA\Property(property="password", type="string", description="senha do usuário")
+     *               @OA\Property(property="email", type="string", format="email", description="Email do usuário", default="daniloganda95@gmail.com"),
+     *               @OA\Property(property="password", type="string", description="senha do usuário", default="Danilo123")
      *          )
      *       ),
      *      @OA\Response(
@@ -64,6 +63,30 @@ class AuthController extends Controller
         $this->response = $this->authServices->login($request);
 
         if(isset($this->response['error'])) return response()->json($this->response, Response::HTTP_UNAUTHORIZED);
+
+        return response()->json($this->response, Response::HTTP_OK);
+    }
+
+    /**
+     * @OA\Post(
+     *      path="/api/logout",
+     *      operationId="getUserLogout",
+     *      tags={"Users"},
+     *      summary="faz o logout",
+     *      security={{"bearer": {}}},
+     *     @OA\Response(
+     *           response=200,
+     *           description="model Member",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", description="sucesso"),
+     *          )
+     *       ),
+     * )
+     */
+    public function logout():JsonResponse
+    {
+        $this->response = $this->authServices->logout();
 
         return response()->json($this->response, Response::HTTP_OK);
     }
