@@ -14,13 +14,15 @@ class UserRequest extends FormRequest
         return false;
     }
 
-    
+
     static function rules(): array
     {
         return [
             'name' => 'required|string|max:255',
+            'church_id' => 'required|int',
             'email' => 'required|email|unique:users',
-            'password' => 'required|string'
+            'password' => 'required|string',
+            'permission' => 'required|string',
         ];
     }
 }
