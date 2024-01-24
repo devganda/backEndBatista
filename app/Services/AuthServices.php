@@ -18,4 +18,15 @@ class AuthServices
         $this->response['error'] = 'Unauthorized';
         return $this->response;
     }
+
+    public function logout():array
+    {
+        $user = Auth::user();
+
+        $user->tokens()->delete();
+
+        $this->response['message'] = 'Logout realizado com sucesso!';
+
+        return $this->response;
+    }
 }
