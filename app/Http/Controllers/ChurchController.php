@@ -71,6 +71,7 @@ class ChurchController extends Controller implements ChurchInterface
      *      operationId="postChurchCreate",
      *      tags={"Church"},
      *      summary="adiciona uma igreja",
+     *     security={{"bearer": {}}},
      *     @OA\RequestBody(
      *           required=true,
      *           description="User object precisa para adicionar uma igreja",
