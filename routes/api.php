@@ -20,8 +20,7 @@ Route::middleware('auth:sanctum')->group(function(){
 
     Route::get('/church', [ChurchController::class, 'index']);
     Route::get('/church/edit/{id}', [ChurchController::class, 'edit']);
-    Route::post('/church/create', [ChurchController::class, 'create'])
-        ->middleware('checkMultiplePermissions:admin,basic');
+    Route::post('/church/create', [ChurchController::class, 'create'])->middleware('checkMultiplePermissions:admin,master');
     Route::put('/church/update/{id}', [ChurchController::class, 'update']);
     Route::delete('/church/delete/{id}', [ChurchController::class, 'delete']);
 

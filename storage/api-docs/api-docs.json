@@ -1752,10 +1752,9 @@
                                         "type": "string",
                                         "format": "email"
                                     },
-                                    "email_verified_at": {
-                                        "description": "confirmação do email do usuário",
-                                        "type": "string",
-                                        "format": "email"
+                                    "permission": {
+                                        "description": "Permissão do usuário",
+                                        "type": "string"
                                     },
                                     "password": {
                                         "description": "senha do usuário",
@@ -1784,7 +1783,7 @@
                             }
                         }
                     },
-                    "201": {
+                    "200": {
                         "description": "model Member",
                         "content": {
                             "application/json": {
