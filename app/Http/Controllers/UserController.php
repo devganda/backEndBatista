@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\IdRequest;
 use App\Http\Requests\UserRequest;
+use App\Http\Requests\UserRequestUpdate;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\Response;
@@ -95,15 +96,12 @@ class UserController extends Controller
      *       ),
      * )
      */
-    public function create(Request $request):JsonResponse
+    public function create(UserRequest $request):JsonResponse
     {
-       $validator = Validator::make($request->all(), UserRequest::rules());
-        if($validator->fails()) {
-            $this->response['error'] =  $validator->errors()->first();
-            return response()->json($this->response,Response::HTTP_BAD_REQUEST);
-        }
-
         $this->response = $this->userService->create($request);
+
+        if(isset($this->response['error'])) return response()->json($this->response, Response::HTTP_INTERNAL_SERVER_ERROR);
+
         return response()->json($this->response, Response::HTTP_CREATED);
     }
 
@@ -169,12 +167,16 @@ class UserController extends Controller
      */
     public function edit(string $id):JsonResponse
     {
-        if(empty($id)) {
-            $this->response['error'] = 'parâmetro inválido';
+        $validator = Validator::make(['id'=> $id], IdRequest::rules());
+
+        if($validator->fails()) {
+            $this->response['error'] = $validator->errors()->first();
             return response()->json($this->response, Response::HTTP_BAD_REQUEST);
         }
 
         $this->response = $this->userService->edit($id);
+
+        if(isset($this->response['error'])) return response()->json($this->response, Response::HTTP_NOT_FOUND);
 
         return response()->json($this->response, Response::HTTP_OK);
     }
@@ -201,8 +203,7 @@ class UserController extends Controller
      *               @OA\Property(property="name", type="string", description="Nome do usuário"),
      *               @OA\Property(property="church_id", type="int", description="id da Igreja"),
      *               @OA\Property(property="email", type="string", format="email", description="Email do usuário"),
-     *               @OA\Property(property="email_verified_at", type="string", format="email", description="confirmação do email do usuário"),
-     *               @OA\Property(property="password", type="string", description="senha do usuário")
+     *               @OA\Property(property="permission", type="string", description="Permissão do usuário")
      *          )
      *       ),
      *      @OA\Response(
@@ -214,7 +215,7 @@ class UserController extends Controller
      *          )
      *      ),
      *     @OA\Response(
-     *           response=201,
+     *           response=200,
      *           description="model Member",
      *         @OA\JsonContent(
      *             type="object",
@@ -222,26 +223,25 @@ class UserController extends Controller
      *                @OA\Property(property="id", type="int", description="id do usuário"),
      *                @OA\Property(property="name", type="string", description="Nome do usuário"),
      *                @OA\Property(property="email", type="string", format="email", description="Email do usuário"),
-     *                @OA\Property(property="email_verified_at", type="string", format="email", description="confirmação do email do usuário"),
-     *                @OA\Property(property="password", type="string", description="senha do usuário"),
-     *                @OA\Property(property="church_id", type="int", description="id da Igreja"),
-     *
+     *                @OA\Property(property="church_id", type="int", description="id da Igreja")
      *          )
      *       ),
      * )
      */
-    public function update(Request $request, string $id):JsonResponse
+    public function update(UserRequestUpdate $request, string $id):JsonResponse
     {
-        $validator = Validator::make($request->all(), UserRequest::rules());
+        $validatorId = Validator::make(['id'=> $id], IdRequest::rules());
 
-        if($validator->fails()) {
-            $this->response['error'] =  $validator->errors()->first();
+        if($validatorId->fails()) {
+            $this->response['error'] =  $validatorId->errors()->first();
             return response()->json($this->response,Response::HTTP_BAD_REQUEST);
         }
 
         $this->response = $this->userService->update($request, $id);
+
         if(isset($this->response['error'])) return response()->json($this->response, Response::HTTP_NOT_FOUND);
-        return response()->json();
+
+        return response()->json($this->response, Response::HTTP_OK);
     }
 
     /**
@@ -297,16 +297,16 @@ class UserController extends Controller
      */
     public function delete(string $id):JsonResponse
     {
-        if(empty($id)) {
-            $this->response['error'] = 'parâmetro inválido';
-            return response()->json($this->response, Response::HTTP_BAD_REQUEST);
+        $validatorId = Validator::make(['id'=> $id], IdRequest::rules());
+
+        if($validatorId->fails()) {
+            $this->response['error'] =  $validatorId->errors()->first();
+            return response()->json($this->response,Response::HTTP_BAD_REQUEST);
         }
 
         $this->response = $this->userService->delete($id);
 
-        if(isset($this->response['error'])){
-            return response()->json($this->response, Response::HTTP_NOT_FOUND);
-        }
+        if(isset($this->response['error'])) return response()->json($this->response, Response::HTTP_NOT_FOUND);
 
         return response()->json($this->response, Response::HTTP_OK);
     }
