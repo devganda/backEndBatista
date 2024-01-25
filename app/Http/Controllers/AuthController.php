@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AuthRequest;
 use App\Services\AuthServices;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -22,7 +20,7 @@ class AuthController extends Controller
      * @OA\Post(
      *      path="/api/login",
      *      operationId="postUserLogin",
-     *      tags={"Users"},
+     *      tags={"Auth"},
      *      summary="faz o login",
      *     @OA\RequestBody(
      *           required=true,
@@ -52,14 +50,8 @@ class AuthController extends Controller
      *       ),
      * )
      */
-    public function login(Request $request):JsonResponse
+    public function login(AuthRequest $request):JsonResponse
     {
-        $validator = Validator::make($request->all(), AuthRequest::rules());
-        if($validator->fails()){
-            $this->response['error'] = $validator->errors()->first();
-            return response()->json($this->response, Response::HTTP_BAD_REQUEST);
-        }
-
         $this->response = $this->authServices->login($request);
 
         if(isset($this->response['error'])) return response()->json($this->response, Response::HTTP_UNAUTHORIZED);
@@ -71,7 +63,7 @@ class AuthController extends Controller
      * @OA\Post(
      *      path="/api/logout",
      *      operationId="getUserLogout",
-     *      tags={"Users"},
+     *      tags={"Auth"},
      *      summary="faz o logout",
      *      security={{"bearer": {}}},
      *     @OA\Response(
