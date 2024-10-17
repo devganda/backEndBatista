@@ -7,7 +7,6 @@ use App\Http\Requests\UserRequest;
 use App\Http\Requests\UserRequestUpdate;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Validator;
 use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -220,12 +219,11 @@ class UserController extends Controller
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(property="message", type="string", description="Mensagem de sucesso"),
-     *                @OA\Property(property="id", type="int", description="id do usuário"),
+     *                @OA\Property(property="id", type="int", description'="id do usuário"),
      *                @OA\Property(property="name", type="string", description="Nome do usuário"),
      *                @OA\Property(property="email", type="string", format="email", description="Email do usuário"),
      *                @OA\Property(property="church_id", type="int", description="id da Igreja")
      *          )
-     *       ),
      * )
      */
     public function update(UserRequestUpdate $request, string $id):JsonResponse

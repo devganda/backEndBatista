@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
 
 
-class MemberController extends Controller implements MemberInterface
+class MemberController extends Controller 
 {
     private array $result = array();
     public function __construct(

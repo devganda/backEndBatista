@@ -9,17 +9,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
-use App\Interface\ChurchInterface;
 
 
-class ChurchController extends Controller implements ChurchInterface
+class ChurchController extends Controller 
 {
-    private ChurchServices $churchServices;
-
-    public function __construct()
-    {
-        $this->churchServices = new ChurchServices();
-    }
+    public function __construct(private ChurchServices $churchServices){}
 
     /**
      * @OA\Get(

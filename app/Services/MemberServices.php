@@ -4,11 +4,12 @@ namespace App\Services;
 
 use App\DTO\MemberDTO;
 use App\Models\Member;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use App\Interface\MemberInterface;
 use function PHPUnit\Framework\isEmpty;
+use Illuminate\Database\Eloquent\Collection;
 
-class MemberServices {
+class MemberServices implements MemberInterface {
 
     private array $result = array();
 
@@ -97,7 +98,7 @@ class MemberServices {
         return $this->result;
     }
 
-    public function delete(string $ID):array
+    public function delete(string $ID):array 
     {
         $this->result['error'] = "O Membro não foi encontrado!";
 

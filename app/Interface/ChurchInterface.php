@@ -2,14 +2,15 @@
 
 namespace App\Interface;
 
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Database\Eloquent\Collection;
 
 interface ChurchInterface
 {
-    public function index():JsonResponse;
-    public function create(Request $request):JsonResponse;
-    public function edit(string $ID):JsonResponse;
-    public function update(Request $request, string $ID):JsonResponse;
-    public function delete(string $ID):JsonResponse;
+    public function all():Collection;
+    public function create(Request $request):array;
+    public function find(string $ID):array;
+    public function update(Request $request, string $ID):array;
+    public function delete(string $ID):array;
 }

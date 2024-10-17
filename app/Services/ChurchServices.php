@@ -4,12 +4,14 @@ namespace App\Services;
 
 use App\DTO\ChurchDTO;
 use App\Models\Church;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use App\Interface\ChurchInterface;
+use Illuminate\Database\Eloquent\Collection;
 
-class ChurchServices{
+class ChurchServices implements ChurchInterface
+{
 
-    private $result = array();
+    private $result = array();  
 
     public function all():Collection
     {
@@ -18,7 +20,7 @@ class ChurchServices{
 
     public function create(Request $request):array
     {
-        $dto = new ChurchDTO(
+        $dto = new ChurchDTO( 
             ...$request->only([
                 'name',
                 'email',
