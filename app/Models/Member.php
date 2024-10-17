@@ -27,8 +27,8 @@ class Member extends Model
         return $this->belongsTo(Church::class, 'church_id');
     }
 
-    public function findMembersByChurchID(string $churchID):Collection
+    public static function findMembersByChurchID(string $churchID):Collection
     {
-        return Member::where('church_id', $churchID)->get();
+        return self::where('church_id', $churchID)->get();
     }
 }
