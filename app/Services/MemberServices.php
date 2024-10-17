@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Exception;
 use App\DTO\MemberDTO;
 use App\Models\Member;
 use Illuminate\Http\Request;
@@ -19,12 +20,7 @@ class MemberServices implements MemberInterface {
 
     public function edit(string $ID):array
     {
-        $member = Member::find($ID);
-
-        if(!$member){
-            $this->result['error'] = "Membro não econtrado!";
-            return $this->result;
-        }
+        $member = Member::findOrFail($ID);
 
         $member->church;
 
@@ -35,9 +31,9 @@ class MemberServices implements MemberInterface {
 
     public function findMembersByChurchID(string $churchID):array
     {
-        $membersModel = new Member();
-        $members = $membersModel->findMembersByChurchID($churchID);
-        if($members->isEmpty()) return ['error' => 'Os membros não foram encontrados!'];
+        $members = Member::findMembersByChurchID($churchID);
+        if(!$members) throw new Exception("Membros não encontrados", 404);
+        
         $this->result['members'] = $members;
         return $this->result;
     }
@@ -57,11 +53,10 @@ class MemberServices implements MemberInterface {
             ])
         );
 
-        $member = new Member($dto->toArray());
-        $member->save();
+        $member = Member::create($dto->toArray());
 
         $this->result['message'] = "Membros criados com sucesso!";
-        $this->result['member'] = $member->find($member->id);
+        $this->result['member'] = $member;
 
         return $this->result;
     }
@@ -99,11 +94,7 @@ class MemberServices implements MemberInterface {
 
     public function delete(string $ID):array 
     {
-        $this->result['error'] = "O Membro não foi encontrado!";
-
-        $member = Member::find($ID);
-
-        if(!$member) return $this->result;
+        $member = Member::findOrFail($ID);
 
         $member->delete();
 
