@@ -6,7 +6,6 @@ use App\DTO\MemberDTO;
 use App\Models\Member;
 use Illuminate\Http\Request;
 use App\Interface\MemberInterface;
-use function PHPUnit\Framework\isEmpty;
 use Illuminate\Database\Eloquent\Collection;
 
 class MemberServices implements MemberInterface {
