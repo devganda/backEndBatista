@@ -2,10 +2,13 @@
 
 namespace App\Services;
 
-use App\DTO\ChurchDTO;
+use Exception;
 use App\Models\Church;
+use App\DTO\ChurchCreateDTO;
+use App\DTO\ChurchDTO;
 use Illuminate\Http\Request;
 use App\Interface\ChurchInterface;
+use App\Mappers\ChurchMapper;
 use Illuminate\Database\Eloquent\Collection;
 
 class ChurchServices implements ChurchInterface
@@ -18,9 +21,31 @@ class ChurchServices implements ChurchInterface
        return Church::all();
     }
 
-    public function create(Request $request):array
+    public function create(ChurchCreateDTO $dto):ChurchDTO  
+    {    
+        try {
+            $church = Church::create($dto->toArray());
+
+            return ChurchMapper::toDTO($church);
+
+        } catch (\Throwable $th) {
+
+            throw new Exception($th->getMessage(), 500);
+        }
+        
+    }
+
+    public function find(string $ID):ChurchDTO 
     {
-        $dto = new ChurchDTO( 
+        $church = Church::findOrFail($ID);
+
+        return ChurchMapper::toDTO($church);
+    }
+
+    public function update(Request $request, string $ID):ChurchDTO
+    {
+
+        $dto = new ChurchCreateDTO(
             ...$request->only([
                 'name',
                 'email',
@@ -31,59 +56,16 @@ class ChurchServices implements ChurchInterface
             ])
         );
 
-        $church = new Church($dto->toArray());
-        $church->save();
-        $churchFirst = $church->find($church->id);
-        $this->result['message'] = "Instituição criada com sucesso!";
-        $this->result['church'] = $churchFirst;
-
-        return $this->result;
-    }
-
-    public function find(string $ID):array
-    {
-        $church = Church::find($ID);
-
-        if(!$church) return ['error' => 'Instituição não encontrada'];
-
-        $this->result['church'] = $church;
-
-        return $this->result;
-    }
-
-    public function update(Request $request, string $ID):array
-    {
-
-        $dto = new ChurchDTO(
-            ...$request->only([
-                'name',
-                'email',
-                'address',
-                'cnpj',
-                'UF',
-                'date_inauguration'
-            ])
-        );
-
-        $church = Church::find($ID);
-
-        if(!$church) return ['error' => 'Instituição não encontrada'];
+        $church = Church::findOrFail($ID);
 
         $church->update($dto->toArray());
 
-        $churchFirst = $church->find($ID);
-
-        $this->result['message'] = 'Instituição atualizada com sucesso!';
-        $this->result['church'] = $churchFirst;
-
-        return $this->result;
+       return ChurchMapper::toDTO($church);
     }
 
     public function delete(string $ID):array
     {
-        $church = Church::find($ID);
-
-        if(!$church) return ['error' => 'Instituição não encontrada'];
+        $church = Church::findOrFail($ID);
 
         $church->delete();
 
