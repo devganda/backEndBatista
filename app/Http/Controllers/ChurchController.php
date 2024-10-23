@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ChurchRequest;
+use App\DTO\ChurchCreateDTO;
+use Illuminate\Http\Request;
+use OpenApi\Annotations as OA;
 use App\Services\ChurchServices;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use App\Http\Requests\ChurchRequest;
 use Illuminate\Support\Facades\Validator;
-use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 
@@ -120,16 +121,25 @@ class ChurchController extends Controller
      */
      public function create(Request $request):JsonResponse
     {
-        $validator = Validator::make($request->all(), ChurchRequest::rules());
+        $validator = Validator::make(
+            $request->all(), 
+            ChurchRequest::rules()
+        );
 
         if($validator->fails()) return response()->json(['error' => $validator->errors()->first()],ResponseAlias::HTTP_BAD_REQUEST);
 
-        $result = $this->churchServices->create($request);
-
-        if(empty($result)) return response()->json(
-            ['error' => 'Error na inserção'],
-            ResponseAlias::HTTP_INTERNAL_SERVER_ERROR
+         $dto = new ChurchCreateDTO( 
+            ...$request->only([
+                'name',
+                'email',
+                'address',
+                'cnpj',
+                'UF',
+                'date_inauguration'
+            ])
         );
+        
+        $result = $this->churchServices->create($dto);
 
         return response()->json($result, ResponseAlias::HTTP_CREATED);
     }
