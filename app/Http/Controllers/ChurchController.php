@@ -206,8 +206,6 @@ class ChurchController extends Controller
 
         $result = $this->churchServices->find($ID);
 
-        if(isset($result['error'])) return response()->json($result, ResponseAlias::HTTP_NOT_FOUND);
-
         return response()->json($result, ResponseAlias::HTTP_OK);
     }
 
@@ -301,11 +299,6 @@ class ChurchController extends Controller
             $ID
         );
 
-        if(isset($result['error'])) return response()->json(
-            $result,
-            ResponseAlias::HTTP_NOT_FOUND
-        );
-
         return response()->json(
            $result,
             ResponseAlias::HTTP_OK
@@ -362,11 +355,6 @@ class ChurchController extends Controller
         );
 
         $result = $this->churchServices->delete($ID);
-
-        if(isset($result['error'])) return response()->json(
-            $result,
-            ResponseAlias::HTTP_NOT_FOUND
-        );
 
         return response()->json(
             $result,
