@@ -4,8 +4,7 @@ namespace App\Interface;
 
 use App\DTO\ChurchDTO;
 use App\DTO\ChurchCreateDTO;
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
+use App\DTO\SuccessDTO;
 use Illuminate\Database\Eloquent\Collection;
 
 interface ChurchInterface
@@ -13,6 +12,6 @@ interface ChurchInterface
     public function all():Collection;
     public function create(ChurchCreateDTO $dto):ChurchDTO;
     public function find(string $ID):ChurchDTO;
-    public function update(Request $request, string $ID):ChurchDTO;
-    public function delete(string $ID):array;
+    public function update(ChurchCreateDTO $dto, string $ID):ChurchDTO;
+    public function delete(string $ID):SuccessDTO;
 }

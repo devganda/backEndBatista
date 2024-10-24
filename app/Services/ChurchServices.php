@@ -6,9 +6,10 @@ use Exception;
 use App\Models\Church;
 use App\DTO\ChurchCreateDTO;
 use App\DTO\ChurchDTO;
-use Illuminate\Http\Request;
+use App\DTO\SuccessDTO;
 use App\Interface\ChurchInterface;
 use App\Mappers\ChurchMapper;
+use App\Mappers\SuccessMapper;
 use Illuminate\Database\Eloquent\Collection;
 
 class ChurchServices implements ChurchInterface
@@ -42,33 +43,21 @@ class ChurchServices implements ChurchInterface
         return ChurchMapper::toDTO($church);
     }
 
-    public function update(Request $request, string $ID):ChurchDTO
+    public function update(ChurchCreateDTO $dto, string $ID):ChurchDTO
     {
-
-        $dto = new ChurchCreateDTO(
-            ...$request->only([
-                'name',
-                'email',
-                'address',
-                'cnpj',
-                'UF',
-                'date_inauguration'
-            ])
-        );
-
         $church = Church::findOrFail($ID);
 
         $church->update($dto->toArray());
 
-       return ChurchMapper::toDTO($church);
+        return ChurchMapper::toDTO($church);
     }
 
-    public function delete(string $ID):array
+    public function delete(string $ID):SuccessDTO
     {
         $church = Church::findOrFail($ID);
 
         $church->delete();
 
-        return ['message' => 'Instituição deletada com sucesso!'];
+        return SuccessMapper::toDTO('Instituição deletada com sucesso!');
     }
 }

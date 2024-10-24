@@ -285,8 +285,19 @@ class ChurchController extends Controller
             ResponseAlias::HTTP_BAD_REQUEST
         );
 
+        $dto = new ChurchCreateDTO(
+            ...$request->only([
+                'name',
+                'email',
+                'address',
+                'cnpj',
+                'UF',
+                'date_inauguration'
+            ])
+        );
+
         $result = $this->churchServices->update(
-            $request,
+            $dto,
             $ID
         );
 
