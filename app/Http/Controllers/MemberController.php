@@ -1,12 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Http\Requests\MemberRequest;
-use App\Interface\MemberInterface;
-use Illuminate\Http\JsonResponse;
+use App\DTO\MemberCreateDTO;
 use Illuminate\Http\Request;
-use App\Services\MemberServices;
 use OpenApi\Annotations as OA;
+use App\Services\MemberServices;
+use Illuminate\Http\JsonResponse;
+use App\Interface\MemberInterface;
+use App\Http\Requests\MemberRequest;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -204,8 +205,21 @@ class MemberController extends Controller
             return response()->json($this->result, Response::HTTP_BAD_REQUEST);
         }
 
+        $dto = new MemberCreateDTO(
+            ...$request->only([
+                'church_id',
+                'name',
+                'email',
+                'age',
+                'date_admission_church',
+                'phone',
+                'UF',
+                'address'
+            ]) 
+        );
+
         $this->result = $this->memberServices->create(
-            $request
+            $dto
         );
 
         return response()->json($this->result, Response::HTTP_CREATED);

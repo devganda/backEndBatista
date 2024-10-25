@@ -5,6 +5,7 @@ namespace App\DTO;
 class MemberDTO extends AbstractDTO{
 
     public function __construct(
+        public readonly int $id,
         public readonly int $church_id,
         public readonly string $name,
         public readonly string $email,
